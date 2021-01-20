@@ -14,39 +14,58 @@ Nc5 d3 61. Nxd3 Nxd3 62. a6`
 
 window.chess = new Chess();
 
-
+var preview = false;
+var fen = "";
 window.board = Chessboard('board1',  {
-  draggable: true,
-  dropOffBoard: 'trash',
-  sparePieces: true
+    draggable: true,
+    dropOffBoard: 'trash',
+    sparePieces: true
 })
 setupControls()
 
 function getNewFen(){
-  chess.load_pgn(pgn);
-  console.log(chess.history());
-  var randI = Math.floor(Math.random()*chess.history().length);
-  for(var i=0; i<randI;i++){
-    chess.undo()
-  }
-  return chess.fen()
+    chess.load_pgn(pgn);
+    console.log(chess.history());
+    var randI = Math.floor(Math.random()*chess.history().length);
+    for(var i=0; i<randI;i++){
+        chess.undo()
+    }
+    return chess.fen()
 }
 
 function clearBoard(){
   board.clear()
+  preview = false;
 }
 function resetBoard(){
-  clearBoard();
-  board.position(getNewFen());
+    clearBoard();
+    fen = getNewFen();
+    board.position(fen);
 }
-function submitClick(){
-  var fen = board.fen()
-  console.log(fen);
-  resetBoard();
-  var delay = 1000*document.getElementById("timeDelay").value
-  setTimeout(clearBoard, delay);
+function resetClick(){
+    preview = true;
+    var fen = board.fen()
+    console.log(fen);
+    resetBoard();
+    var delay = 1000*document.getElementById("timeDelay").value
+    setTimeout(clearBoard, delay);
+}
+function submitBoard(){
+    if(!preview){
+        console.log(fen)
+        console.log(board.fen())
+        if(fen.split(' ')[0] === board.fen()){
+            alert("Correct")
+            clearBoard()
+        }
+        else {
+            alert("Try again")
+        }
+    }
 }
 function setupControls(){
-  var submitButton = document.getElementById("submitButton");
-  submitButton.addEventListener("click", submitClick);
+    var resetButton = document.getElementById("resetButton");
+    resetButton.addEventListener("click", resetClick);
+    var submitButton = document.getElementById("submitButton");
+    submitButton.addEventListener("click", submitBoard)
 }
