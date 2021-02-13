@@ -42,13 +42,16 @@ function resetBoard(){
     fen = getNewFen();
     board.position(fen);
 }
+
+var clearBoardTimeout;
 function resetClick(){
+    clearTimeout(clearBoardTimeout);
     preview = true;
     var fen = board.fen()
     console.log(fen);
     resetBoard();
     var delay = 1000*document.getElementById("timeDelay").value
-    setTimeout(clearBoard, delay);
+    clearBoardTimeout = setTimeout(clearBoard, delay);
 }
 function submitBoard(){
     if(!preview){
